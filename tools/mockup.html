@@ -1,0 +1,498 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Mockup scene 2240×1260</title>
+<meta name="viewport" content="width=2240">
+<!--
+  Шаблон презентационной сцены 16:9 (2240×1260) для карточки проекта.
+  Всё рисуется кодом (CSS/SVG), сторонних мокапов и логотипов нет.
+
+  Параметры — через query-строку или window.__SCENE__ (объект имеет приоритет):
+
+    device      browser | tablet | phone | panel | duo            (по умолчанию browser)
+    angle       front | left | right | floor                      (по умолчанию front)
+                  front — почти фронтально, лёгкий наклон
+                  left  — экран развёрнут влево (правый край ближе к зрителю)
+                  right — экран развёрнут вправо (левый край ближе к зрителю)
+                  floor — устройство стоит на «полу» под углом, тень лежит на полу
+    background  white | paper | stone | ink                       (по умолчанию white)
+    screen      путь к сырому скриншоту (от корня проекта или абсолютный URL)
+    phoneScreen путь к мобильному скриншоту (только для duo)
+    url         текст в адресной строке окна браузера (необязателен)
+
+    offsetX     0…100, фокус кадра по горизонтали, % (50 — центр)
+    offsetY     0…100, фокус кадра по вертикали, %   (0 — выравнивание по верху)
+    zoom        ≥ 1, увеличение кадра вокруг точки фокуса
+    phoneOffsetX / phoneOffsetY / phoneZoom — то же для телефона в duo
+
+    rx, ry, rz  градусы, переопределяют пресет ракурса
+    pitch       градусы, наклон «камеры» к полу (для floor)
+    perspective px, сила перспективы (меньше — сильнее)
+    fill        множитель размера устройства в кадре (1 — как в пресете)
+    x, y        сдвиг устройства от центра кадра, px
+    aspect      соотношение сторон экрана (ширина/высота), по умолчанию 1.6 (0.462 у телефона)
+    chrome      auto | light | dark — тема шапки окна браузера (auto — по верху скриншота)
+    frame       graphite | silver — цвет рамки планшета/телефона
+    statusBar   1 | 0 — полоса статуса под «островком» телефона (цвет берётся с верха скриншота);
+                  полоса добавляется к высоте экрана, скриншот при этом не обрезается
+    addressBar  1 | 0 — адресная строка; по умолчанию показывается, только если задан url
+                  (без неё окно браузера читается как обычное окно приложения)
+    phoneSide   left | right — с какой стороны окна стоит телефон в duo
+    phoneScale  высота телефона в долях высоты окна (0.78)
+    phoneShift  доля ширины телефона, выступающая за боковой край окна (0.4)
+    phoneDrop   доля высоты телефона, выступающая ниже окна (0.08)
+    shadow      auto | wall | floor | none, shadowK — множитель плотности тени
+    glare       0…1, блик на стекле
+
+  Готовность: window.__READY__ === true (картинки декодированы, шрифты загружены, сцена вписана в кадр).
+  Ошибка:     window.__ERROR__ (строка). Геометрия: window.__SCENE_INFO__.
+-->
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 2240px; height: 1260px; overflow: hidden; background: #fff; }
+  body { font-family: "Inter", system-ui, -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+
+  .scene { position: relative; width: 2240px; height: 1260px; overflow: hidden; }
+  .bg, .bg i { position: absolute; inset: 0; display: block; }
+
+  /* ---------- фоны ---------- */
+  .bg-white { background: #fff; }
+  .bg-paper { background: linear-gradient(168deg, #f3f1ec 0%, #eeebe5 48%, #e9e6df 100%); }
+  .bg-paper .l1 { background: radial-gradient(ellipse 70% 60% at 30% 18%, rgba(255,255,255,.55), rgba(255,255,255,0) 70%); }
+  .bg-stone { background: linear-gradient(180deg, #e2e2e0 0%, #d8d8d6 34%, #cbcbc9 58%, #c6c6c4 64%, #cdcdcb 70%, #d9d9d7 86%, #dfdfdd 100%); }
+  .bg-stone .l1 { background: radial-gradient(ellipse 62% 58% at 46% 34%, rgba(255,255,255,.62), rgba(255,255,255,0) 72%); }
+  .bg-stone .l2 { background: radial-gradient(ellipse 78% 82% at 50% 48%, rgba(0,0,0,0) 52%, rgba(20,20,24,.2) 100%); }
+  .bg-ink { background: linear-gradient(180deg, #2b2d32 0%, #222327 46%, #1a1b1e 62%, #1d1e22 72%, #24262a 100%); }
+  .bg-ink .l1 { background: radial-gradient(ellipse 64% 60% at 46% 32%, rgba(255,255,255,.085), rgba(255,255,255,0) 72%); }
+  .bg-ink .l2 { background: radial-gradient(ellipse 80% 84% at 50% 48%, rgba(0,0,0,0) 48%, rgba(0,0,0,.5) 100%); }
+
+  /* ---------- 3D-каркас ---------- */
+  .fit { position: absolute; inset: 0; transform-origin: 0 0; }
+  .stage { position: absolute; inset: 0; }
+  .p3 { position: absolute; left: 0; top: 0; width: 0; height: 0; transform-style: preserve-3d; }
+  .rig { left: 50%; top: 50%; }
+  .body { position: absolute; transform-style: preserve-3d; }
+  .slab, .face { position: absolute; inset: 0; border-radius: var(--r); }
+  .face { overflow: hidden; }
+
+  /* ---------- тени ---------- */
+  .sh { position: absolute; pointer-events: none; }
+
+  /* ---------- экран ---------- */
+  .screen { position: absolute; overflow: hidden; background: #0b0b0d; }
+  .view { position: absolute; left: 0; right: 0; bottom: 0; top: 0; overflow: hidden; }
+  .view img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 0; display: block; }
+  .glare { position: absolute; inset: 0; pointer-events: none;
+           background: linear-gradient(118deg, rgba(255,255,255,.085) 0%, rgba(255,255,255,.03) 20%, rgba(255,255,255,0) 38%); }
+  .hair { position: absolute; inset: 0; border-radius: inherit; pointer-events: none; }
+  .edge { position: absolute; inset: 0; border-radius: inherit; pointer-events: none; box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.075); }
+
+  /* ---------- окно браузера ---------- */
+  .browser .face { background: var(--bar); }
+  .bar { position: absolute; left: 0; right: 0; top: 0; background: var(--bar-grad); border-bottom: 1px solid var(--bar-line); }
+  .dots { position: absolute; left: 28px; top: 50%; display: flex; gap: 12px; transform: translateY(-50%); }
+  .dots b { display: block; width: 17px; height: 17px; border-radius: 50%; background: var(--dot); }
+  .pill { position: absolute; left: 50%; top: 50%; width: 44%; height: 40px; transform: translate(-50%, -50%);
+          border-radius: 20px; background: var(--pill); color: var(--pill-text);
+          display: flex; align-items: center; justify-content: center; gap: 9px;
+          font-size: 18.5px; letter-spacing: .1px; white-space: nowrap; overflow: hidden; }
+  .pill svg { width: 15px; height: 15px; flex: none; opacity: .75; }
+  .chrome-light { --bar: #f3f3f4; --bar-grad: linear-gradient(180deg, #f9f9fa, #eeeeef); --bar-line: rgba(0,0,0,.09);
+                  --dot: #d2d2d4; --pill: #e3e3e5; --pill-text: #76767a; }
+  .chrome-dark  { --bar: #242529; --bar-grad: linear-gradient(180deg, #2b2c31, #222327); --bar-line: rgba(255,255,255,.07);
+                  --dot: #4b4c52; --pill: #17181b; --pill-text: #9c9da3; }
+
+  /* ---------- планшет / телефон ---------- */
+  .tablet .face, .phone .face { background: var(--glass); }
+  .rim { position: absolute; inset: 0; border-radius: inherit; padding: var(--rim); pointer-events: none;
+         background: var(--rim-grad);
+         -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+         -webkit-mask-composite: xor;
+         mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+         mask-composite: exclude; }
+  .lens { position: absolute; border-radius: 50%; background: radial-gradient(circle at 38% 35%, #2a2d36 0%, #0d0e11 58%); }
+  .island { position: absolute; background: #000; }
+  .status { position: absolute; left: 0; right: 0; top: 0; }
+
+  .frame-graphite { --glass: #060607; --rim-grad: linear-gradient(138deg, #8a8d95 0%, #3d3f44 16%, #1c1d20 44%, #25262a 72%, #686b72 100%); }
+  .frame-silver   { --glass: #060607; --rim-grad: linear-gradient(138deg, #ffffff 0%, #d6d8dc 18%, #a9acb2 46%, #c4c6cb 72%, #f4f5f6 100%); }
+</style>
+</head>
+<body>
+<div class="scene" id="scene"></div>
+<script>
+(async () => {
+  'use strict';
+  const W = 2240, H = 1260;
+
+  // ---------- параметры ----------
+  const raw = {};
+  for (const [k, v] of new URLSearchParams(location.search)) raw[k] = v;
+  Object.assign(raw, window.__SCENE__ || {});
+  const num = (v, d) => { const n = typeof v === 'number' ? v : parseFloat(v); return Number.isFinite(n) ? n : d; };
+  const pick = (v, list, d) => (list.includes(String(v)) ? String(v) : d);
+  const flag = (v, d) => (v === undefined || v === null || v === '' ? d : !['0', 'false', 'no', 'off'].includes(String(v)));
+  const asset = (p) => (!p ? '' : /^([a-z][a-z0-9+.-]*:|\/)/i.test(p) ? p : '../' + p);
+
+  const device = pick(raw.device, ['browser', 'tablet', 'phone', 'panel', 'duo'], 'browser');
+  const angle = pick(raw.angle, ['front', 'left', 'right', 'floor'], 'front');
+  const background = pick(raw.background, ['white', 'paper', 'stone', 'ink'], 'white');
+
+  // Ракурсы. rx/ry/rz — поворот устройства, pitch — наклон камеры к полу (только floor).
+  const ANGLES = {
+    front: { rx: 5,  ry: -9,  rz: 0.7,  pitch: 0,   perspective: 3000, shadow: 'wall' },
+    left:  { rx: 8,  ry: -25, rz: 1.5,  pitch: 0,   perspective: 2700, shadow: 'wall' },
+    right: { rx: 8,  ry: 25,  rz: -1.5, pitch: 0,   perspective: 2700, shadow: 'wall' },
+    floor: { rx: 7,  ry: -30, rz: 0,    pitch: -13, perspective: 3200, shadow: 'floor' },
+  };
+  // Поправки пресетов под конкретные устройства.
+  const ANGLE_TWEAKS = {
+    panel: {
+      front: { rx: 12, ry: -10, rz: 1.5 },
+      left:  { rx: 20, ry: -20, rz: 5.5, perspective: 3000 },
+      right: { rx: 20, ry: 20,  rz: -5.5, perspective: 3000 },
+    },
+    phone: {
+      front: { rx: 4,  ry: -14, rz: 1.2, perspective: 2400 },
+      left:  { rx: 8,  ry: -30, rz: 2.5,  perspective: 2400 },
+      right: { rx: 8,  ry: 30,  rz: -2.5, perspective: 2400 },
+      floor: { rx: 7,  ry: -34, pitch: -13, perspective: 2600 },
+    },
+    tablet: {
+      floor: { rx: 11, ry: -27 },
+    },
+  };
+  // Доля кадра, которую может занять устройство (ширина, высота), и смещение центра.
+  const FRAMING = {
+    browser: { w: 0.70, h: 0.77 },
+    tablet:  { w: 0.66, h: 0.75 },
+    panel:   { w: 0.70, h: 0.75 },
+    duo:     { w: 0.74, h: 0.79 },
+    phone:   { w: 0.60, h: 0.80 },
+  };
+  const BACKDROPS = {
+    white: { cls: 'bg-white', layers: 0, sh: '24, 26, 34', k: 0.8,  hair: 'rgba(15,17,22,.13)', dark: false },
+    paper: { cls: 'bg-paper', layers: 1, sh: '38, 30, 18', k: 1.0,  hair: 'rgba(40,32,18,.14)', dark: false },
+    stone: { cls: 'bg-stone', layers: 2, sh: '18, 19, 24', k: 1.15, hair: 'rgba(15,17,22,.16)', dark: false },
+    ink:   { cls: 'bg-ink',   layers: 2, sh: '0, 0, 0',    k: 1.9,  hair: 'rgba(255,255,255,.13)', dark: true },
+  };
+
+  const A = Object.assign({}, ANGLES[angle], (ANGLE_TWEAKS[device] || {})[angle] || {});
+  const cfg = {
+    rx: num(raw.rx, A.rx), ry: num(raw.ry, A.ry), rz: num(raw.rz, A.rz),
+    pitch: num(raw.pitch, A.pitch), perspective: num(raw.perspective, A.perspective),
+    shadow: pick(raw.shadow, ['wall', 'floor', 'none'], A.shadow),
+    shadowK: num(raw.shadowK, 1),
+    fill: num(raw.fill, 1), x: num(raw.x, 0), y: num(raw.y, 0),
+    glare: Math.max(0, Math.min(1, num(raw.glare, 0.5))),
+    frame: pick(raw.frame, ['graphite', 'silver'], 'graphite'),
+    chrome: pick(raw.chrome, ['auto', 'light', 'dark'], 'auto'),
+    statusBar: flag(raw.statusBar, true),
+  };
+  const back = BACKDROPS[background];
+  const floorMode = cfg.shadow === 'floor';
+
+  const el = (tag, cls, style) => {
+    const n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (style) Object.assign(n.style, style);
+    return n;
+  };
+  const px = (n) => `${n}px`;
+
+  // ---------- фон ----------
+  const scene = document.getElementById('scene');
+  const bg = el('div', `bg ${back.cls}`);
+  for (let i = 1; i <= back.layers; i++) bg.append(el('i', `l${i}`));
+  scene.append(bg);
+  const fit = el('div', 'fit');
+  scene.append(fit);
+
+  // ---------- экран со скриншотом ----------
+  const pending = [];
+  function makeView(src, o) {
+    const view = el('div', 'view');
+    const img = new Image();
+    img.decoding = 'sync';
+    const fx = Math.max(0, Math.min(100, num(o.offsetX, 50)));
+    const fy = Math.max(0, Math.min(100, num(o.offsetY, 0)));
+    const zoom = Math.max(1, num(o.zoom, 1));
+    img.style.objectPosition = `${fx}% ${fy}%`;
+    if (zoom !== 1) { img.style.transformOrigin = `${fx}% ${fy}%`; img.style.transform = `scale(${zoom})`; }
+    pending.push(new Promise((resolve, reject) => {
+      if (!src) return reject(new Error('screen is not set'));
+      img.onload = () => (img.decode ? img.decode().catch(() => {}) : Promise.resolve()).then(resolve);
+      img.onerror = () => reject(new Error(`cannot load ${src}`));
+      img.src = asset(src);
+    }));
+    view.append(img);
+    return { view, img };
+  }
+  // Средний цвет полосы скриншота (нужен same-origin; на file:// вернёт null).
+  function sample(img, fromY, toY) {
+    try {
+      const c = document.createElement('canvas');
+      c.width = 16; c.height = 4;
+      const g = c.getContext('2d', { willReadFrequently: true });
+      const h = img.naturalHeight;
+      g.drawImage(img, 0, h * fromY, img.naturalWidth, Math.max(1, h * (toY - fromY)), 0, 0, 16, 4);
+      const d = g.getImageData(0, 0, 16, 4).data;
+      let r = 0, gg = 0, b = 0;
+      for (let i = 0; i < d.length; i += 4) { r += d[i]; gg += d[i + 1]; b += d[i + 2]; }
+      const n = d.length / 4;
+      r /= n; gg /= n; b /= n;
+      return { r, g: gg, b, lum: 0.2126 * r + 0.7152 * gg + 0.0722 * b, css: `rgb(${r | 0}, ${gg | 0}, ${b | 0})` };
+    } catch (e) { return null; }
+  }
+  const afterLoad = [];
+
+  // Боковая грань: стопка слоёв по Z. Передние и задние слои светлее — фаска.
+  function slabs(body, t, tone) {
+    const pal = tone === 'silver'
+      ? { edge: '#f2f3f5', mid: '#b4b7bd', back: '#d9dbdf' }
+      : { edge: '#62656c', mid: '#222327', back: '#3a3c41' };
+    let last = null;
+    for (let i = t; i >= 1; i--) {
+      const s = el('div', 'slab');
+      s.style.transform = `translateZ(${-i}px)`;
+      s.style.background = i <= 2 ? pal.edge : i >= t - 1 ? pal.back : pal.mid;
+      if (i === t) { s.classList.add('bb'); last = s; }
+      body.append(s);
+    }
+    return last;
+  }
+  const hairline = (color) => el('div', 'hair', { boxShadow: `inset 0 0 0 1px ${color}` });
+
+  // ---------- устройства ----------
+  function makeBrowser(o) {
+    const aspect = num(o.aspect, 1.6);
+    const cw = 1440, ch = Math.round(cw / aspect), bar = 66, r = 20;
+    const w = cw, h = ch + bar;
+    const body = el('div', 'body browser chrome-light');
+    body.style.setProperty('--r', px(r));
+    const face = el('div', 'face bb');
+    const barEl = el('div', 'bar', { height: px(bar) });
+    const dots = el('div', 'dots');
+    dots.append(el('b'), el('b'), el('b'));
+    barEl.append(dots);
+    const pill = el('div', 'pill');
+    // без url пустая пилюля выглядит недоделкой, поэтому по умолчанию она есть только вместе с адресом
+    if (!flag(o.addressBar, !!o.url)) pill.style.display = 'none';
+    if (o.url) {
+      pill.innerHTML = '<svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2.6" y="6.2" width="8.8" height="6" rx="1.6"/><path d="M4.6 6.2V4.4a2.4 2.4 0 0 1 4.8 0v1.8"/></svg>';
+      const t = el('span');
+      t.textContent = String(o.url);
+      pill.append(t);
+    }
+    barEl.append(pill);
+    const screen = el('div', 'screen', { left: 0, top: px(bar), width: px(cw), height: px(ch) });
+    const v = makeView(o.screen, o);
+    screen.append(v.view);
+    face.append(screen, barEl, hairline(back.hair));
+    body.append(face);
+    afterLoad.push(() => {
+      let mode = cfg.chrome;
+      if (mode === 'auto') { const s = sample(v.img, 0, 0.04); mode = s && s.lum < 96 ? 'dark' : 'light'; }
+      body.classList.remove('chrome-light');
+      body.classList.add(`chrome-${mode}`);
+    });
+    return { el: body, w, h, r, t: 0 };
+  }
+
+  function makePanel(o) {
+    const aspect = num(o.aspect, 1.6);
+    const w = 1440, h = Math.round(w / aspect), r = 28;
+    const body = el('div', 'body panel');
+    body.style.setProperty('--r', px(r));
+    const face = el('div', 'face bb');
+    const screen = el('div', 'screen', { inset: 0 });
+    screen.append(makeView(o.screen, o).view);
+    face.append(screen, hairline(back.hair));
+    body.append(face);
+    return { el: body, w, h, r, t: 0 };
+  }
+
+  function makeTablet(o) {
+    const aspect = num(o.aspect, 1.6);
+    const sw = 1280, sh = Math.round(sw / aspect), b = 30, r = 66, sr = 38, t = 15;
+    const w = sw + b * 2, h = sh + b * 2;
+    const body = el('div', `body tablet frame-${cfg.frame}`);
+    body.style.setProperty('--r', px(r));
+    body.style.setProperty('--rim', '3px');
+    slabs(body, t, cfg.frame);
+    const face = el('div', 'face bb');
+    const screen = el('div', 'screen', { left: px(b), top: px(b), width: px(sw), height: px(sh), borderRadius: px(sr) });
+    screen.append(makeView(o.screen, o).view);
+    if (cfg.glare) screen.append(el('div', 'glare', { opacity: cfg.glare }));
+    screen.append(el('div', 'edge'));
+    const lens = el('div', 'lens', { width: '9px', height: '9px', left: px(w / 2 - 4.5), top: px(b / 2 - 4.5) });
+    face.append(screen, lens, el('div', 'rim'));
+    if (back.dark) face.append(hairline('rgba(255,255,255,.2)'));
+    body.append(face);
+    return { el: body, w, h, r, t };
+  }
+
+  function makePhone(o) {
+    const aspect = num(o.aspect, 1170 / 2532);
+    // полоса статуса добавляется сверху к высоте экрана, поэтому скриншот виден целиком
+    const sb = cfg.statusBar ? 52 : 0;
+    const sw = 390, sh = Math.round(sw / aspect) + sb, b = 13, r = 68, sr = 56, t = 17;
+    const w = sw + b * 2, h = sh + b * 2;
+    const body = el('div', `body phone frame-${cfg.frame}`);
+    body.style.setProperty('--r', px(r));
+    body.style.setProperty('--rim', '3.5px');
+    slabs(body, t, cfg.frame);
+    const face = el('div', 'face bb');
+    const screen = el('div', 'screen', { left: px(b), top: px(b), width: px(sw), height: px(sh), borderRadius: px(sr) });
+    const v = makeView(o.screen, o);
+    v.view.style.top = px(sb);
+    screen.append(v.view);
+    if (sb) {
+      const status = el('div', 'status', { height: px(sb + 1), background: '#fff' });
+      screen.append(status);
+      afterLoad.push(() => { const s = sample(v.img, 0, 0.004); if (s) { status.style.background = s.css; screen.style.background = s.css; } });
+    }
+    const island = el('div', 'island', { width: '112px', height: '33px', left: px(sw / 2 - 56), top: '11px', borderRadius: '17px' });
+    island.append(el('div', 'lens', { width: '11px', height: '11px', right: '12px', top: '11px' }));
+    screen.append(island);
+    if (cfg.glare) screen.append(el('div', 'glare', { opacity: cfg.glare }));
+    screen.append(el('div', 'edge'));
+    face.append(screen, el('div', 'rim'));
+    if (back.dark) face.append(hairline('rgba(255,255,255,.2)'));
+    body.append(face);
+    return { el: body, w, h, r, t };
+  }
+
+  // ---------- сборка тел ----------
+  const bodies = [];
+  if (device === 'browser') bodies.push(Object.assign(makeBrowser(raw), { x: 0, y: 0, z: 0, s: 1 }));
+  if (device === 'panel') bodies.push(Object.assign(makePanel(raw), { x: 0, y: 0, z: 0, s: 1 }));
+  if (device === 'tablet') bodies.push(Object.assign(makeTablet(raw), { x: 0, y: 0, z: 0, s: 1 }));
+  if (device === 'phone') bodies.push(Object.assign(makePhone(raw), { x: 0, y: 0, z: 0, s: 1 }));
+  if (device === 'duo') {
+    const win = Object.assign(makeBrowser(raw), { x: 0, y: 0, z: 0, s: 1 });
+    const ph = makePhone({
+      screen: raw.phoneScreen, aspect: raw.phoneAspect,
+      offsetX: raw.phoneOffsetX, offsetY: raw.phoneOffsetY, zoom: raw.phoneZoom,
+    });
+    const side = pick(raw.phoneSide, ['left', 'right'], cfg.ry > 0 ? 'left' : 'right');
+    // телефон: высота относительно окна, доля ширины за краем окна, доля высоты ниже окна
+    const s = (win.h * num(raw.phoneScale, 0.78)) / ph.h;
+    const dx = win.w / 2 + ph.w * s * (num(raw.phoneShift, 0.4) - 0.5);
+    const dy = win.h / 2 + ph.h * s * (num(raw.phoneDrop, 0.08) - 0.5);
+    Object.assign(ph, { x: side === 'right' ? dx : -dx, y: dy, z: 120, s, front: true });
+    bodies.push(win, ph);
+  }
+
+  // Один «проход» = отдельный 3D-контекст с той же камерой. Тени и тела кладём в разные
+  // проходы по порядку отрисовки, чтобы тень всегда лежала под своим телом.
+  function pass(b) {
+    const stage = el('div', 'stage', { perspective: px(cfg.perspective) });
+    const rig = el('div', 'p3 rig', { transform: `rotateX(${cfg.pitch}deg)` });
+    const yaw = el('div', 'p3', {
+      transform: floorMode
+        ? `rotateY(${cfg.ry}deg) rotateZ(${cfg.rz}deg)`
+        : `rotateY(${cfg.ry}deg) rotateX(${cfg.rx}deg) rotateZ(${cfg.rz}deg)`,
+    });
+    const place = el('div', 'p3', { transform: `translate3d(${b.x}px, ${b.y}px, ${b.z}px) scale(${b.s})` });
+    stage.append(rig); rig.append(yaw); yaw.append(place);
+    fit.append(stage);
+    return place;
+  }
+  const K = back.k * cfg.shadowK;
+  const rgba = (a) => `rgba(${back.sh}, ${Math.min(1, a * K).toFixed(3)})`;
+
+  function wallShadows(place, b) {
+    const base = { left: px(-b.w / 2), top: px(-b.h / 2), width: px(b.w), height: px(b.h), borderRadius: px(b.r) };
+    const near = b.front ? 0.55 : 1; // тень телефона на окне ближе и плотнее
+    const layers = [
+      { dx: 3,  dy: 9,   dz: 2,   blur: 9,  a: 0.30, s: 0.995 },
+      { dx: 14, dy: 38,  dz: 46,  blur: 34, a: 0.22, s: 0.985 },
+      { dx: 34, dy: 96,  dz: 130, blur: 86, a: 0.24, s: 0.96 },
+    ];
+    for (const l of layers) {
+      const s = el('div', 'sh', base);
+      s.style.background = rgba(l.a);
+      s.style.filter = `blur(${l.blur * near}px)`;
+      s.style.transform = `translate3d(${l.dx * near}px, ${l.dy * near}px, ${-(b.t + l.dz * near)}px) scale(${l.s})`;
+      place.append(s);
+    }
+  }
+
+  function floorShadows(place, b) {
+    const w = b.w, t = Math.max(b.t, 4);
+    // контактная тень — тёмная полоска под основанием
+    const contact = el('div', 'sh', { left: px(-w / 2 + 6), top: 0, width: px(w - 12), height: px(t + 22), borderRadius: px(t) });
+    contact.style.transformOrigin = '50% 0';
+    contact.style.transform = `translateZ(12px) rotateX(-90deg)`;
+    contact.style.background = rgba(0.62);
+    contact.style.filter = 'blur(7px)';
+    // падающая тень — уходит назад и в сторону от источника света
+    const len = b.h * 0.72;
+    const skew = cfg.ry < 0 ? 34 : -34;
+    const cast = el('div', 'sh', { left: px(-w / 2), top: 0, width: px(w), height: px(len), borderRadius: px(b.r * 0.6) });
+    cast.style.transformOrigin = '50% 0';
+    cast.style.transform = `translateZ(6px) rotateX(-90deg) skewX(${skew}deg)`;
+    cast.style.background = `linear-gradient(180deg, ${rgba(0.42)} 0%, ${rgba(0.2)} 45%, ${rgba(0)} 100%)`;
+    cast.style.filter = 'blur(26px)';
+    // рассеянное пятно вокруг основания
+    const aw = w * 1.9, ah = w * 1.25;
+    const amb = el('div', 'sh', { left: px(-aw / 2), top: 0, width: px(aw), height: px(ah) });
+    amb.style.transformOrigin = '50% 0';
+    amb.style.transform = `translateZ(${ah * 0.42}px) rotateX(-90deg)`;
+    amb.style.background = `radial-gradient(ellipse 50% 50% at 50% 42%, ${rgba(0.26)} 0%, ${rgba(0.1)} 45%, ${rgba(0)} 72%)`;
+    amb.style.filter = 'blur(30px)';
+    place.append(amb, cast, contact);
+  }
+
+  for (const b of bodies) {
+    if (cfg.shadow !== 'none') {
+      const p = pass(b);
+      if (floorMode) floorShadows(p, b); else wallShadows(p, b);
+    }
+    const p = pass(b);
+    Object.assign(b.el.style, { left: px(-b.w / 2), top: px(floorMode ? -b.h : -b.h / 2), width: px(b.w), height: px(b.h) });
+    if (floorMode) {
+      const lean = el('div', 'p3', { transform: `rotateX(${cfg.rx}deg)` });
+      lean.append(b.el);
+      p.append(lean);
+    } else {
+      p.append(b.el);
+    }
+  }
+
+  // ---------- ожидание ресурсов и вписывание в кадр ----------
+  try {
+    await Promise.all(pending);
+    if (document.fonts && document.fonts.ready) await document.fonts.ready;
+    afterLoad.forEach((fn) => fn());
+
+    let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+    for (const n of document.querySelectorAll('.bb')) {
+      const r = n.getBoundingClientRect();
+      x0 = Math.min(x0, r.left); y0 = Math.min(y0, r.top); x1 = Math.max(x1, r.right); y1 = Math.max(y1, r.bottom);
+    }
+    const fr = FRAMING[device];
+    const bw = x1 - x0, bh = y1 - y0;
+    const k = Math.min((W * fr.w) / bw, (H * fr.h) / bh) * cfg.fill;
+    // у «настенной» тени центр чуть выше середины, у «напольной» — ещё выше: под устройством нужен воздух для тени
+    const cx = W / 2 + cfg.x, cy = H * (floorMode ? 0.47 : 0.482) + cfg.y;
+    const dx = cx - ((x0 + x1) / 2) * k, dy = cy - ((y0 + y1) / 2) * k;
+    fit.style.transform = `translate(${dx}px, ${dy}px) scale(${k})`;
+    const box = { left: x0 * k + dx, top: y0 * k + dy, right: x1 * k + dx, bottom: y1 * k + dy };
+    window.__SCENE_INFO__ = {
+      device, angle, background, scale: k, box,
+      margins: { left: box.left, top: box.top, right: W - box.right, bottom: H - box.bottom },
+    };
+    await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+    window.__READY__ = true;
+    document.documentElement.dataset.ready = '1';
+  } catch (e) {
+    window.__ERROR__ = String((e && e.message) || e);
+    document.documentElement.dataset.error = window.__ERROR__;
+  }
+})();
+</script>
+</body>
+</html>

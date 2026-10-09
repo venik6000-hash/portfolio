@@ -1,0 +1,12 @@
+node_modules/
+.DS_Store
+reference/shots/our-*
+assets/projects/raw/
+
+# Local tooling and working material, not part of the published site
+.claude/
+reference/
+tools/raw-*
+tools/judge/
+tools/shoot.mjs
+assets/img/*.png

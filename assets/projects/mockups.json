@@ -1,0 +1,133 @@
+[
+  {
+    "slug": "zakupshchik",
+    "device": "tablet",
+    "angle": "right",
+    "background": "white",
+    "screen": "assets/projects/raw/zakupshchik-desktop.png",
+    "offsetY": 0,
+    "zoom": 1,
+    "note": "Открывающая карточка: планшет на белом, как первая карточка референса."
+  },
+  {
+    "slug": "2life",
+    "device": "panel",
+    "angle": "left",
+    "background": "paper",
+    "screen": "assets/projects/raw/2life-desktop-2.png",
+    "offsetX": 0,
+    "offsetY": 0,
+    "zoom": 1.163,
+    "rx": 13,
+    "ry": -15,
+    "rz": 3,
+    "note": "Экран «Моя волна»: график вместо списков с красными крестиками. zoom 1.163 от левого верхнего угла срезает низ сайдбара с подписью admin и кнопку корзины справа. Наклон мягче пресета, чтобы текст был крупнее."
+  },
+  {
+    "slug": "mocchi",
+    "device": "browser",
+    "angle": "right",
+    "background": "ink",
+    "screen": "assets/projects/raw/mocchi-desktop.png",
+    "addressBar": false,
+    "offsetY": 0,
+    "zoom": 1,
+    "note": "Десктопное приложение: окно без адресной строки. Светло-серый интерфейс — на графите."
+  },
+  {
+    "slug": "telegram-editor",
+    "device": "tablet",
+    "angle": "left",
+    "background": "white",
+    "screen": "assets/projects/raw/telegram-editor-desktop.png",
+    "aspect": 1.44,
+    "offsetY": 0,
+    "zoom": 1,
+    "note": "Сырой кадр 2880×2000, поэтому aspect 1.44. Тёмная рамка планшета держит и чёрный сайдбар, и белые панели на белом фоне."
+  },
+  {
+    "slug": "umio",
+    "device": "duo",
+    "angle": "right",
+    "background": "paper",
+    "screen": "assets/projects/raw/umio-desktop.png",
+    "phoneScreen": "assets/projects/raw/umio-mobile.png",
+    "url": "umioschool.com",
+    "offsetY": 0,
+    "zoom": 1,
+    "phoneSide": "right",
+    "phoneShift": 0.55,
+    "phoneDrop": 0.14,
+    "phoneScale": 0.72,
+    "aspect": 1.7778,
+    "note": "Телефон справа и сдвинут за край окна, чтобы не закрывать заголовок на десктопном кадре. aspect 1.78 срезает пустой белый низ десктопного кадра."
+  },
+  {
+    "slug": "ctrl-ya",
+    "device": "tablet",
+    "angle": "floor",
+    "background": "stone",
+    "screen": "assets/projects/raw/ctrl-ya-desktop-2.png",
+    "offsetY": 0,
+    "zoom": 1,
+    "note": "Экран «Тарифы», а не hero: слоган и фото авторов уже есть у соседней UMIO. Планшет стоит на студийном полу."
+  },
+  {
+    "slug": "audience-ai",
+    "device": "browser",
+    "angle": "front",
+    "background": "ink",
+    "screen": "assets/projects/raw/audience-ai-desktop.png",
+    "offsetY": 0,
+    "zoom": 1,
+    "note": "Белый интерфейс — на графите."
+  },
+  {
+    "slug": "guitar-tone",
+    "device": "panel",
+    "angle": "right",
+    "background": "white",
+    "screen": "assets/projects/raw/guitar-tone-desktop-2.png",
+    "aspect": 1.55,
+    "offsetX": 100,
+    "offsetY": 0,
+    "zoom": 1.2,
+    "rx": 13,
+    "ry": 15,
+    "rz": -3,
+    "note": "Кадр плотнее: без сайдбара, только плеер, волна и лента аккордов — интерфейс крупнее. Наклон мягче пресета."
+  },
+  {
+    "slug": "crm-teraso",
+    "device": "browser",
+    "angle": "left",
+    "background": "stone",
+    "screen": "assets/projects/raw/crm-teraso-desktop.png",
+    "aspect": 1.682,
+    "offsetX": 0,
+    "offsetY": 0,
+    "zoom": 1.21,
+    "note": "Кадр подрезан справа и снизу: три колонки целиком вместо четвёртой, обрезанной посреди цифр; бейдж Admin за кадром. Есть тёмный вариант: crm-teraso-desktop-dark.png (тогда фон лучше paper)."
+  },
+  {
+    "slug": "alpha-advisory",
+    "device": "tablet",
+    "angle": "right",
+    "background": "paper",
+    "screen": "assets/projects/raw/alpha-advisory-desktop.png",
+    "offsetY": 0,
+    "zoom": 1,
+    "note": "Тёмно-синий сайт в тёмной рамке на тёплом светлом."
+  },
+  {
+    "slug": "teraso",
+    "device": "duo",
+    "angle": "left",
+    "background": "white",
+    "screen": "assets/projects/raw/teraso-desktop.png",
+    "phoneScreen": "assets/projects/raw/teraso-mobile.png",
+    "url": "teraso.com.ua",
+    "offsetY": 0,
+    "zoom": 1
+  }
+]

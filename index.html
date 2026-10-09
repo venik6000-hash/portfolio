@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Никита Тесленко — AI product builder</title>
+  <meta name="description" content="Никита Тесленко строит AI-продукты и запускает бизнес: ассистент закупок, CRM и сайты для компаний, две школы практического ИИ.">
+  <meta name="theme-color" content="#f4f4f3">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="ru_RU">
+  <meta property="og:site_name" content="Никита Тесленко">
+  <meta property="og:title" content="Никита Тесленко — AI product builder">
+  <meta property="og:description" content="Строю AI-продукты и запускаю бизнес: ассистент закупок, CRM и сайты для компаний, две школы практического ИИ.">
+  <meta property="og:url" content="https://venik6000-hash.github.io/portfolio/">
+  <meta property="og:image" content="https://venik6000-hash.github.io/portfolio/assets/og.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Никита Тесленко: строю AI-продукты и запускаю бизнес">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://venik6000-hash.github.io/portfolio/">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;700&display=swap">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-view="home" data-theme="light">
+  <script>
+    // Runs before first paint so a saved dark theme or a deep link does not flash the light home screen.
+    (function () {
+      var body = document.body;
+      try {
+        if (localStorage.getItem('theme') === 'dark') body.dataset.theme = 'dark';
+      } catch (error) { /* storage unavailable: stay on the default theme */ }
+      var view = location.hash.slice(1).split('/')[0].toLowerCase();
+      if (view === 'projects' || view === 'about') body.dataset.view = view;
+    })();
+  </script>
+
+  <div class="cursor-dot" aria-hidden="true"></div>
+
+  <div class="page-shell">
+    <header class="page-header">
+      <div class="switcher" role="group" aria-label="Тема и раздел">
+        <button class="switcher__button" type="button" data-theme-toggle aria-label="Тёмная тема" aria-pressed="false">
+          <svg class="switcher__icon switcher__icon--sun" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" aria-hidden="true">
+            <circle cx="8" cy="8" r="2.6"/>
+            <path d="M8 2.2v1.4M8 12.4v1.4M2.2 8h1.4M12.4 8h1.4M3.9 3.9l.99.99M11.11 11.11l.99.99M3.9 12.1l.99-.99M11.11 4.89l.99-.99"/>
+          </svg>
+          <svg class="switcher__icon switcher__icon--moon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12.79 9.6a5 5 0 0 1-6.39-6.39 5 5 0 1 0 6.39 6.39z"/>
+          </svg>
+        </button>
+        <button class="switcher__button switcher__about" type="button" data-view-toggle="about">
+          <span data-about-label>обо мне</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="hero" data-screen="home">
+      <div class="hero__content">
+        <div class="hero__identity">
+          <div class="hero__avatar-stack" data-avatar></div>
+          <p class="hero__name" data-name></p>
+        </div>
+        <h1 class="hero__title" data-headline></h1>
+        <nav class="apps" aria-label="Проекты и контакты" data-apps></nav>
+      </div>
+      <div class="hero__burst" aria-hidden="true" data-burst></div>
+    </main>
+
+    <section class="screen project-screen" data-screen="projects" aria-labelledby="projects-heading" tabindex="-1" hidden inert>
+      <h1 class="visually-hidden" id="projects-heading">Проекты</h1>
+      <div class="project-screen__bar">
+        <button class="back-button back-button--top" type="button" data-view-toggle="home">
+          <svg class="back-button__icon" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.5 2.8 3.5 6l3 3.2"/></svg>
+          <span data-back-label>Назад</span>
+        </button>
+      </div>
+      <div class="project-screen__inner">
+        <header class="projects__hero">
+          <p class="projects__intro" data-intro></p>
+        </header>
+        <ol class="projects__cards" data-cards></ol>
+        <footer class="projects__footer">
+          <button class="back-button" type="button" data-view-toggle="home">
+            <svg class="back-button__icon" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.5 2.8 3.5 6l3 3.2"/></svg>
+            <span data-back-label>Назад</span>
+          </button>
+          <p class="projects__note" data-note></p>
+        </footer>
+      </div>
+    </section>
+
+    <section class="screen about-screen" data-screen="about" aria-labelledby="about-heading" hidden inert>
+      <h1 class="visually-hidden" id="about-heading">Обо мне</h1>
+      <div class="about-screen__inner">
+        <div class="about__copy" data-about-copy></div>
+        <div class="about__cta" data-about-cta></div>
+      </div>
+    </section>
+  </div>
+
+  <nav class="dock" aria-label="Проекты и контакты">
+    <div class="dock__glass">
+      <ul class="dock__track" data-dock></ul>
+    </div>
+  </nav>
+
+  <div class="page-transition" aria-hidden="true">
+    <svg class="page-transition__svg" preserveAspectRatio="none"><path class="page-transition__wave"/></svg>
+  </div>
+
+  <script type="module" src="script.js"></script>
+</body>
+</html>
