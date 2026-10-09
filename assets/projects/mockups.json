@@ -24,11 +24,11 @@
     "note": "Экран «Моя волна»: график вместо списков с красными крестиками. zoom 1.163 от левого верхнего угла срезает низ сайдбара с подписью admin и кнопку корзины справа. Наклон мягче пресета, чтобы текст был крупнее."
   },
   {
-    "slug": "mocchi",
+    "slug": "mochi",
     "device": "browser",
     "angle": "right",
     "background": "ink",
-    "screen": "assets/projects/raw/mocchi-desktop.png",
+    "screen": "assets/projects/raw/mochi-desktop.png",
     "addressBar": false,
     "offsetY": 0,
     "zoom": 1,
@@ -67,10 +67,10 @@
     "device": "tablet",
     "angle": "floor",
     "background": "stone",
-    "screen": "assets/projects/raw/ctrl-ya-desktop-2.png",
+    "screen": "assets/projects/raw/ctrl-ya-desktop.png",
     "offsetY": 0,
     "zoom": 1,
-    "note": "Экран «Тарифы», а не hero: слоган и фото авторов уже есть у соседней UMIO. Планшет стоит на студийном полу."
+    "note": "Главный экран сайта: заголовок и портрет авторов. Планшет стоит на студийном полу."
   },
   {
     "slug": "audience-ai",
@@ -124,10 +124,11 @@
     "device": "duo",
     "angle": "left",
     "background": "white",
-    "screen": "assets/projects/raw/teraso-desktop.png",
-    "phoneScreen": "assets/projects/raw/teraso-mobile.png",
+    "screen": "assets/projects/raw/teraso-desktop-ru.png",
+    "phoneScreen": "assets/projects/raw/teraso-mobile-ru.png",
     "url": "teraso.com.ua",
     "offsetY": 0,
-    "zoom": 1
+    "zoom": 1,
+    "note": "Сайт только на украинском: для русскоязычного портфолио текст первого экрана переведён при съёмке (tools/raw-teraso-ru.mjs)."
   }
 ]

@@ -70,14 +70,14 @@ export const projects = [
     media: { src: 'assets/projects/2life.jpg', tone: '#efede8', alt: 'Дашборд 2life на демо-данных' },
   },
   {
-    slug: 'mocchi',
-    title: 'Mocchi',
-    dockLabel: 'Mocchi',
+    slug: 'mochi',
+    title: 'Mochi',
+    dockLabel: 'Mochi',
     icon: { bg: '#eea4c4', fg: '#ffffff', glyph: 'круглое моти', wave: '#e0a9c0' },
     description: [
       'Управленческий учёт для небольшого производства моти в Бразилии. Техкарты с вложенными заготовками считают себестоимость с точностью до грамма, а чеки хранят снимок цены и себестоимости на момент продажи, поэтому правка рецепта не искажает историю. Стек: Bun, Hono, React, Prisma и SQLite, всё упаковано в приложение для macOS с автообновлением. Маржа по каждому вкусу, выручка и движение денег видны в одном дашборде.',
     ],
-    media: { src: 'assets/projects/mocchi.jpg', tone: '#1c1d21', alt: 'Дашборд Mocchi на демо-данных' },
+    media: { src: 'assets/projects/mochi.jpg', tone: '#1c1d21', alt: 'Дашборд Mochi на демо-данных' },
   },
   {
     slug: 'telegram-editor',
@@ -162,6 +162,6 @@ export const projects = [
     description: [
       'Сайт-каталог террасной доски из ДПК и дерева, собран на Astro: 30 позиций в 5 категориях, калькулятор материала, квиз-расчёт, галерея объектов и блог. Вся серверная часть — один PHP-файл на обычном хостинге, который отправляет заявки в почту, Telegram, Meta Conversions API и CRM. Админка на React публикует каталог в один клик через GitHub Actions с историей версий и откатом, так что владелец сам правит цены.',
     ],
-    media: { src: 'assets/projects/teraso.jpg', tone: '#ffffff', alt: 'Каталог террасной доски на сайте Teraso' },
+    media: { src: 'assets/projects/teraso.jpg', tone: '#ffffff', alt: 'Главный экран сайта Teraso' },
   },
 ];
